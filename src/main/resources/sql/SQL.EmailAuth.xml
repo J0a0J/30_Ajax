@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<!-- namespace, id를 맞춰주지 않으면 에러가 가장 많이 나니 주의.  -->
+<mapper namespace="com.feb.join.dao.EmailAuthDao">
+	<select id="confirmId" parameterType="String" resultType="int">
+		SELECT count(1) FROM lecture.member
+		WHERE member_id = #{memberId}
+	</select>
+	
+	<!-- public int signUp(HashMap<String, String> params); -->
+	<insert id="addEmailAuth" parameterType="EmailAuth">
+		INSERT INTO lecture.email_auth
+		(member_idx, member_id, email, link, send_dtm)
+		VALUES(
+			#{memberIdx},
+			#{memberId},  
+			#{email}, 
+			#{link},
+			to_char(now(), 'YYYYMMDDHH24MISS')
+		)
+	</insert>
+</mapper>

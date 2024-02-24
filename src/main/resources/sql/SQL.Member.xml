@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.feb.join.dao.MemberDao">
+	<!-- public int confirmId(String memberId); -->
+	<select id="confirmId" parameterType="String" resultType="int">
+		SELECT count(1) FROM lecture.member
+		WHERE member_id = #{memberId}
+	</select>
+	
+	<!-- public int signUp(HashMap<String, String> params); -->
+	<insert id="signUp" parameterType="java.util.HashMap">
+		<!-- 회원가입 이후 그 값을 바로 다른테이블에 넣고 싶을 때 아래와 같이 사용한다. -->
+		<!-- order는 실행문 이후에 값을 가져올 건지 이전에 가져올 건지,,  -->
+		<!-- member_seq 다음값을 불러와서 memberIdx에 값을 넣어준다.  -->
+		<!-- selectKey가 넣어줌.  -->
+		<selectKey resultType="int" keyProperty="memberIdx" order="BEFORE">
+		<!-- PostgreSQL -->
+			SELECT nextval('lecture.member_seq');
+		</selectKey>
+		INSERT INTO lecture.member
+		(member_id, passwd, nickname, member_name, email, join_dtm)
+		VALUES(
+			#{memberId}, 
+			#{passwd}, 
+			#{nickname}, 
+			#{memberName}, 
+			#{email}, 
+			to_char(now(), 'YYYYMMDDHH24MISS')
+		)
+	</insert>
+</mapper>
